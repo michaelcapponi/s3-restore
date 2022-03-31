@@ -39,6 +39,8 @@ transfer = None
 futures = {}
 client = None
 
+CONTINUE_ON_FAIL = False
+
 class TestS3PitRestore(unittest.TestCase):
 
     def generate_tree(self, path, contents):
@@ -314,6 +316,8 @@ def do_restore():
     for page in page_iterator:
         if not "Versions" in page:
             print("No versions matching criteria, exiting ...", file=sys.stderr)
+            if CONTINUE_ON_FAIL:
+                continue
             sys.exit(1)
         versions = page["Versions"]
         # Some deletemarkers may come from the previous page: add them now
